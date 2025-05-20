@@ -1,0 +1,23 @@
+date,day_name,menu,total_calorie,is_day_off
+1 Mayıs 2025,Perşembe,,0,True
+2 Mayıs 2025,Cuma,"Tarhana Çorba (115 cal), Kıymalı Taze Fasulye (290 cal), Soslu Makarna (230 cal), Meyve",635,False
+5 Mayıs 2025,Pazartesi,"Kremalı Brokoli Çorba (160 cal), Etli Kuru Fasulye (290 cal), Şehriyeli Pirinç Pilavı (326 cal), Yoğurt (158 cal)",934,False
+6 Mayıs 2025,Salı,"Tarhana Çorba (115 cal), Patatesli Kuru Köfte (270 cal), Peynirli Maydanozlu Kuskus (240 cal), Meyve",625,False
+7 Mayıs 2025,Çarşamba,"Mercimek Çorba (176 cal), Etli Türlü (537 cal), Şehriyeli Pirinç Pilavı (326 cal), Kalburabastı (366 cal)",1405,False
+8 Mayıs 2025,Perşembe,"Kremalı Sebze Çorba (183 cal), Köri Soslu Tavuk (392 cal), Kısır (374 cal), Pembe Sultan (160 cal)",1109,False
+9 Mayıs 2025,Cuma,"Kaşarlı Domates Çorba (175 cal), Kıymalı Çökertme Kebabı (340 cal), Bulgur Pilavı (384 cal), Mevsim Salata (123 cal)",1022,False
+12 Mayıs 2025,Pazartesi,"Ezogelin Çorba (136 cal), Yoğurtlu Kıymalı Ispanak (276 cal), Soslu Makarna (230 cal), Meyve",642,False
+13 Mayıs 2025,Salı,"Ayranaşı Çorba (218 cal), Patatesli Fırın Köfte (270 cal), Erişte (230 cal), Meyve",718,False
+14 Mayıs 2025,Çarşamba,"Mercimek Çorba (176 cal), Mengen Musakka (345 cal), Pirinç Pilavı (310 cal), Cacık (80 cal)",911,False
+15 Mayıs 2025,Perşembe,"Kaşarlı Domates Çorba (175 cal), Tavuk Fajita (320 cal), Fesleğen Soslu Makarna (230 cal), Ayran (90 cal)",815,False
+16 Mayıs 2025,Cuma,"Kremalı Şehriye Çorba (160 cal), Kıymalı Bezelye Yemeği (298 cal), Şehriyeli Pirinç Pilavı (326 cal), Kıbrıs Tatlısı (262 cal)",1046,False
+19 Mayıs 2025,Pazartesi,,0,True
+20 Mayıs 2025,Salı,"Kaşarlı Domates Çorba (175 cal), Sebzeli Tavuk Döner (375 cal), Mısırlı Pirinç Pilavı (320 cal), Ayran (90 cal)",960,False
+21 Mayıs 2025,Çarşamba,"Yayla Çorba (195 cal), İzmir Köfte (365 cal), Meyhane Pilavı (384 cal), Meyve",944,False
+22 Mayıs 2025,Perşembe,"Kremalı Sebze Çorba (183 cal), Etli Nohut (238 cal), Bulgur Pilavı (384 cal), Mevsim Salata (123 cal)",928,False
+23 Mayıs 2025,Cuma,"Ezogelin Çorba (136 cal), Kıymalı Kabak Graten (201 cal), Soslu Makarna (230 cal), Haşhaşlı Revani (501 cal)",1068,False
+26 Mayıs 2025,Pazartesi,"Kaşarlı Domates Çorba (175 cal), Etli Kuru Fasulye (290 cal), Şehriyeli Pirinç Pilavı (326 cal), Yoğurt (158 cal)",949,False
+27 Mayıs 2025,Salı,"Kremalı Şehriye Çorba (180 cal), Garnitürlü Kasap Köfte (383 cal), Mercimekli Bulgur Pilavı (184 cal), Meyve",747,False
+28 Mayıs 2025,Çarşamba,"Naneli Yoğurt Çorba (195 cal), Kıymalı Fırın Patates (525 cal), Şehriyeli Pirinç Pilavı (326 cal), Browni (380 cal)",1426,False
+29 Mayıs 2025,Perşembe,"Ezogelin Çorba (136 cal), Mantarlı Tavuk Sote (392 cal), Soslu Makarna (230 cal), Ayran (90 cal)",848,False
+30 Mayıs 2025,Cuma,"Mercimek Çorba (176 cal), Etli Çökertme Kebabı (340 cal), Bulgur Pilavı (384 cal), Mevsim Salata (123 cal)",1023,False

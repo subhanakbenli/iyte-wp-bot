@@ -1,0 +1,106 @@
+from datetime import datetime, timedelta
+from bus.models import Bus, Trip  # Kendi app adını yazmayı unutma
+
+# 882 İYTE - Urla otobüsü saat listeleri
+
+# Cuma (Weekday)
+iyte_weekday = [
+    "07:20", "08:05", "08:50", "09:35", "10:20", "11:05", "11:50", "12:40", "13:30",
+    "14:20", "15:10", "16:00", "16:50", "17:40", "18:30", "19:20", "20:00", "20:40",
+    "21:20", "22:40", "00:00"
+]
+urla_weekday = [
+    "06:30", "07:20", "08:05", "08:50", "09:35", "10:20", "11:05", "11:50", "12:40",
+    "13:30", "14:20", "15:10", "16:00", "16:50", "17:40", "18:30", "19:20", "20:00",
+    "20:40", "22:00", "23:20"
+]
+
+# Cumartesi (Saturday)
+iyte_saturday = [
+    "07:20", "08:05", "08:50", "09:35", "10:20", "11:05", "11:50", "12:40", "13:30",
+    "14:20", "15:10", "16:00", "16:50", "17:40", "18:30", "19:20", "20:00", "20:40",
+    "21:20"
+]
+urla_saturday = [
+    "06:30", "07:20", "08:05", "08:50", "09:35", "10:20", "11:05", "11:50", "12:40",
+    "13:30", "14:20", "15:10", "16:00", "16:50", "17:40", "18:30", "19:20", "20:00",
+    "20:40"
+]
+
+# Pazar (Sunday)
+iyte_sunday = [
+    "07:20", "08:05", "08:50", "09:35", "10:20", "11:05", "11:50", "12:40", "13:30",
+    "14:20", "15:10", "16:00", "16:50", "17:40", "18:30", "19:20", "20:00", "20:40",
+    "21:20"
+]
+urla_sunday = [
+    "06:30", "07:20", "08:05", "08:50", "09:35", "10:20", "11:05", "11:50", "12:40",
+    "13:30", "14:20", "15:10", "16:00", "16:50", "17:40", "18:30", "19:20", "20:00",
+    "20:40"
+]
+
+
+# Tek bir otobüs tanımlıyoruz
+bus, _ = Bus.objects.get_or_create(number="882")
+
+def add_trips(departure_list, is_start_from_iyte, trip_day, departure_station, arrival_station):
+    for dep_time in departure_list:
+        Trip.objects.create(
+            bus=bus,
+            trip_day=trip_day,
+            is_start_from_iyte=is_start_from_iyte,
+            departure_station=departure_station,
+            arrival_station=arrival_station,
+            departure_time=dep_time,
+        )
+
+# İYTE'den Urla'ya gidenler
+add_trips(
+    departure_list=iyte_weekday,
+    is_start_from_iyte=True,
+    trip_day="Weekday",
+    departure_station="İYTE",
+    arrival_station="Urla"
+)
+
+# Urla'dan İYTE'ye gidenler
+add_trips(
+    departure_list=urla_weekday,
+    is_start_from_iyte=False,
+    trip_day="Weekday",
+    departure_station="Urla",
+    arrival_station="İYTE"
+)
+# Cumartesi - İYTE → Urla
+add_trips(
+    departure_list=iyte_saturday,
+    is_start_from_iyte=True,
+    trip_day="Saturday",
+    departure_station="İYTE",
+    arrival_station="Urla"
+)
+# Cumartesi - Urla → İYTE
+add_trips(
+    departure_list=urla_saturday,
+    is_start_from_iyte=False,
+    trip_day="Saturday",
+    departure_station="Urla",
+    arrival_station="İYTE"
+)
+# Pazar - İYTE → Urla
+add_trips(
+    departure_list=iyte_sunday,
+    is_start_from_iyte=True,
+    trip_day="Sunday",
+    departure_station="İYTE",
+    arrival_station="Urla"
+)
+# Pazar - Urla → İYTE
+add_trips(
+    departure_list=urla_sunday,
+    is_start_from_iyte=False,
+    trip_day="Sunday",
+    departure_station="Urla",
+    arrival_station="İYTE"
+)
+# Bu kod, 882 numaralı otobüs için İYTE ve Urla arasında gidiş-dönüş seferlerini veritabanına ekler.
