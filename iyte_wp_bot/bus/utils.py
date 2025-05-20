@@ -2,17 +2,26 @@ from .models import Bus, Trip
 from collections import defaultdict
 from datetime import datetime
 from django.utils import timezone
-
-def get_schedule_with_busNo(bus_number):
+TRIP_DAY_TR = {
+            "Weekday": "Hafta İçi",
+            "Saturday": "Cumartesi",
+            "Sunday": "Pazar"
+        }
+def get_schedule_with_busNo(bus_no):
     try:
-        bus = Bus.objects.get(bus_number=bus_number)
-        trip = Trip.objects.filter(bus=bus)
-        return trip
+        trip_day = "Weekday" if datetime.now().weekday() < 5 else "Saturday" if datetime.now().weekday() == 5 else "Sunday"
+        bus = Bus.objects.get(number=bus_no)
+        trip = Trip.objects.filter(bus=bus, trip_day=trip_day)
+        trip_str = format_schedule(trip, TRIP_DAY_TR[trip_day])
+        
+        return trip_str
     except Bus.DoesNotExist:
-        return None
+        return "Seçili Otobüs bulunamadı."
     except Trip.DoesNotExist:
-        return None
-
+        return "Seçili Otobüse ait sefer bulunamadı"
+    except Exception as e:
+        print(f"Error: {e}")
+        return "Bir hata oluştu. Lütfen tekrar deneyin."
 def get_schedule_with_from_to(from_station, to_station):
     try:
         trip_day = "Weekday" if datetime.now().weekday() < 5 else "Saturday" if datetime.now().weekday() == 5 else "Sunday"
@@ -22,12 +31,8 @@ def get_schedule_with_from_to(from_station, to_station):
             schedule = Trip.objects.filter(departure_station=from_station, trip_day=trip_day)
         else:
             schedule = Trip.objects.filter(departure_station=from_station, arrival_station=to_station)
-        trip_day_tr = {
-            "Weekday": "Hafta İçi",
-            "Saturday": "Cumartesi",
-            "Sunday": "Pazar"
-        }
-        schedule_str = format_schedule(schedule,trip_day_tr[trip_day])
+
+        schedule_str = format_schedule(schedule,TRIP_DAY_TR[trip_day])
         return schedule_str
     except Trip.DoesNotExist:
         return None

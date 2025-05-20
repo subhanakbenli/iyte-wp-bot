@@ -22,7 +22,7 @@ def format_menu(date,menu, menu_items):
         if item.menu_type not in menu_list:
             menu_list.append(item.menu_type)
             lines.append(f"🍽️ *{item.menu_type}* 🍽️")
-        lines.append(f"_{item.item_name}_ ➔ *{item.calorie}* kcal")
+        lines.append(f"_{item.item_name}_ ➔ _{item.calorie} kcal_")
     
     return "\n".join(lines)
 
@@ -48,8 +48,11 @@ def get_menu(when):
 
 def add_like_to_menu(menu_id):
     try:
-        Menu.objects.get(id=menu_id).add_like()
-        return "Değerlendirmeniz menüye eklendi."       
+        menu = Menu.objects.get(id=menu_id)
+        menu.add_like()
+        
+        
+        return f"Değerlendirmeniz menüye eklendi.\n*Likes*:{menu.likes} - *Dislikes*:{menu.dislikes}"     
     except Menu.DoesNotExist:
         return "Değerlendirme yapılamadı. Menü bulunamadı."
     except Exception as e:

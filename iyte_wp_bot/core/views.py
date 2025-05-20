@@ -21,11 +21,19 @@ FUNCTION_MAP = {
     22: (get_schedule_with_from_to, {"from_station": "İYTE", "to_station": "F.Altay Aktarma"}),
     23: (get_schedule_with_from_to, {"from_station": "İYTE", "to_station": "Urla"}),
     24: (get_schedule_with_from_to, {"from_station": "İYTE", "to_station": "Gulbahce"}),
+    
     25: (get_schedule_with_from_to, {"from_station": "heryer", "to_station": "İYTE"}),
     26: (get_schedule_with_from_to, {"from_station": "F.Altay Aktarma", "to_station": "İYTE"}),
     27: (get_schedule_with_from_to, {"from_station": "Urla", "to_station": "İYTE"}),
     28: (get_schedule_with_from_to, {"from_station": "Gulbahce", "to_station": "İYTE"}),
-    # 31: (contact_us, {}),
+    
+    882: (get_schedule_with_busNo, {"bus_no": "882"}),
+    883: (get_schedule_with_busNo, {"bus_no": "883"}),
+    981: (get_schedule_with_busNo, {"bus_no": "981"}),
+    982: (get_schedule_with_busNo, {"bus_no": "982"}),
+    760: (get_schedule_with_busNo, {"bus_no": "760"}),
+    761: (get_schedule_with_busNo, {"bus_no": "761"}),
+    999: (get_schedule_with_busNo, {"bus_no": "999"}),
 }
 
 VERIFY_TOKEN = os.environ.get("VERIFY_TOKEN")
@@ -37,7 +45,7 @@ def run_function_for_id(id):
     return func(**kwargs)
 @csrf_exempt
 def webhook(request):
-    # Webhook doğrulaması
+
     if request.method == "GET":
         mode = request.GET.get("hub.mode")
         token = request.GET.get("hub.verify_token")
@@ -92,24 +100,19 @@ def webhook(request):
             if incoming_code.isdigit():
                 message_id = int(incoming_code)
                 print(f"Message ID: {message_id}")
-                message = Messages.objects.filter(message_id=message_id).first()
-                if message:
-                    text = run_function_for_id(message_id)
-                    print(f"Function result: {text}")
-                    messages_sub = Messages.objects.filter(message_id__gt=message_id*10, message_id__lt=message_id*10+10)
-                    print(f"Sub-messages count: {messages_sub.count()}")
-                    if messages_sub.exists() and 0 < messages_sub.count() < 4:
-                        interactive_data = interactive_button_text(text, messages_sub)
-                        send_button_message(wa_id, interactive_data=interactive_data)
-                    elif messages_sub.exists() and messages_sub.count() >= 4:
-                        interactive_data = interactive_list_text(body_text=text, messages_queryset=messages_sub)
-                        send_list_message(wa_id, interactive_data=interactive_data)
-                    else:
-                        send_whatsapp_text(wa_id, text)
-                    return JsonResponse({"status": "message processed"})
+                text = run_function_for_id(message_id)
+                print(f"Function result: {text}")
+                messages_sub = Messages.objects.filter(message_id__gt=message_id*10, message_id__lt=message_id*10+10)
+                print(f"Sub-messages count: {messages_sub.count()}")
+                if messages_sub.exists() and 0 < messages_sub.count() < 4:
+                    interactive_data = interactive_button_text(text, messages_sub)
+                    send_button_message(wa_id, interactive_data=interactive_data)
+                elif messages_sub.exists() and messages_sub.count() >= 4:
+                    interactive_data = interactive_list_text(body_text=text, messages_queryset=messages_sub)
+                    send_list_message(wa_id, interactive_data=interactive_data)
                 else:
-                    
-                    return JsonResponse({"status": "message not found"})
+                    send_whatsapp_text(wa_id, text)
+                return JsonResponse({"status": "message processed"})
             
             # Diğer durumlar
             return JsonResponse({"status": "message processed"})
