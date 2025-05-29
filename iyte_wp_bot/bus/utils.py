@@ -30,6 +30,7 @@ def get_schedule_with_from_to(from_station, to_station):
         elif to_station == "heryer":
             schedule = Trip.objects.filter(departure_station=from_station, trip_day=trip_day)
         else:
+            print(f"from_station: {from_station}, to_station: {to_station}")
             schedule = Trip.objects.filter(departure_station=from_station, arrival_station=to_station)
 
         schedule_str = format_schedule(schedule,TRIP_DAY_TR[trip_day])

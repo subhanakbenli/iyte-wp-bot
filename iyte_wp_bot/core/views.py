@@ -2,6 +2,7 @@ from django.http import JsonResponse, HttpResponse
 from django.views.decorators.csrf import csrf_exempt
 import json
 import os
+from django.db.models import Q
 
 from core.utils.helpers import interactive_button_text, interactive_list_text
 from core.utils.messaging import (
@@ -9,23 +10,27 @@ from core.utils.messaging import (
     send_button_message,
     send_list_message,
 )
-from core.models import Messages
+from core.models import Messages, populate_messages
+from general import saatleri_guncelle
 from bus.utils import get_schedule_with_busNo, get_schedule_with_from_to
 from menu.utils import get_menu, add_like_to_menu, add_disslike_to_menu
 FUNCTION_MAP = {
-    1 : (get_menu, {"when": "today"}),
-    11: (add_like_to_menu, {}),
-    12: (add_disslike_to_menu, {}),
-    13: (get_menu, {"when": "tomorrow"}),
+    11 : (get_menu, {"when": "today"}),
+    12: (get_menu, {"when": "tomorrow"}),
+
+    # 11: (add_like_to_menu, {}),
+    # 12: (add_disslike_to_menu, {}),
     21: (get_schedule_with_from_to, {"from_station": "İYTE", "to_station": "heryer"}),
-    22: (get_schedule_with_from_to, {"from_station": "İYTE", "to_station": "F.Altay Aktarma"}),
+    22: (get_schedule_with_from_to, {"from_station": "İYTE", "to_station": "İzmir"}),
     23: (get_schedule_with_from_to, {"from_station": "İYTE", "to_station": "Urla"}),
     24: (get_schedule_with_from_to, {"from_station": "İYTE", "to_station": "Gulbahce"}),
-    
-    25: (get_schedule_with_from_to, {"from_station": "heryer", "to_station": "İYTE"}),
-    26: (get_schedule_with_from_to, {"from_station": "F.Altay Aktarma", "to_station": "İYTE"}),
-    27: (get_schedule_with_from_to, {"from_station": "Urla", "to_station": "İYTE"}),
-    28: (get_schedule_with_from_to, {"from_station": "Gulbahce", "to_station": "İYTE"}),
+    25: (get_schedule_with_from_to, {"from_station": "Urla", "to_station": "Çeşme"}),
+
+    31: (get_schedule_with_from_to, {"from_station": "heryer", "to_station": "İYTE"}),
+    32: (get_schedule_with_from_to, {"from_station": "İzmir", "to_station": "İYTE"}),
+    33: (get_schedule_with_from_to, {"from_station": "Urla", "to_station": "İYTE"}),
+    34: (get_schedule_with_from_to, {"from_station": "Gulbahce", "to_station": "İYTE"}),
+    35: (get_schedule_with_from_to, {"from_station": "Çeşme", "to_station": "Urla"}),
     
     882: (get_schedule_with_busNo, {"bus_no": "882"}),
     883: (get_schedule_with_busNo, {"bus_no": "883"}),
@@ -91,11 +96,29 @@ def webhook(request):
             # Nokta ile ilk menü
             if incoming_text in ["."]:
                 text = "Sana yardımcı olabileceklerim şunlar:"
-                messages_qs = Messages.objects.filter(message_id__lt=10)
-                interactive_data = interactive_button_text(text, messages_qs)
-                send_button_message(wa_id, interactive_data=interactive_data)
-                return JsonResponse({"status": "message sent"})
+                messages_qs_menu = Messages.objects.filter(message_id__gt=10, message_id__lt=20)
+                messages_qs_ulasim_iyteden = Messages.objects.filter(
+                    Q(message_id=2) | Q(message_id__gt=21, message_id__lt=25)
+                )
 
+                # İYTEye Ulaşım: id=3 olan mesaj + 31-35 arası mesajlar
+                messages_qs_ulasim_iyteye = Messages.objects.filter(
+                    Q(message_id=3) | Q(message_id__gt=31, message_id__lt=35)
+                )
+                messages_dict = {"Menü": messages_qs_menu,
+                                 "İYTEden Ulaşım": messages_qs_ulasim_iyteden,
+                                 "İYTEye Ulaşım": messages_qs_ulasim_iyteye}
+                
+                interactive_data = interactive_list_text(body_text=text, 
+                                                         categorized_messages=messages_dict,
+                                                        header_text="İYTE Asistanı",
+                                                         footer_text="Lütfen bir madde seçin.")
+                send_list_message(wa_id, interactive_data=interactive_data)
+                return JsonResponse({"status": "message sent"})
+            if incoming_text =="update":
+                populate_messages()
+                saatleri_guncelle()
+                
             # Kod/id gelen cevaplar (buton ID'si ya da yazı olarak sayı gelirse)
             if incoming_code.isdigit():
                 message_id = int(incoming_code)
@@ -108,8 +131,24 @@ def webhook(request):
                     interactive_data = interactive_button_text(text, messages_sub)
                     send_button_message(wa_id, interactive_data=interactive_data)
                 elif messages_sub.exists() and messages_sub.count() >= 4:
-                    interactive_data = interactive_list_text(body_text=text, messages_queryset=messages_sub)
-                    send_list_message(wa_id, interactive_data=interactive_data)
+                    if message_id == 2:
+                        text = "*İYTE'den* ulaşım için lütfen bir yer seçin:"
+                        messages_dict = {"İYTE'ye Ulaşım": messages_sub}
+                        interactive_data = interactive_list_text(body_text=text, 
+                                                                 categorized_messages=messages_dict,
+                                                                header_text="İYTE Asistanı",
+                                                                 footer_text="Lütfen bir madde seçin.")
+                        send_list_message(wa_id, interactive_data=interactive_data)
+                        
+                    elif message_id ==3:
+                        text = "*İYTE'ye* ulaşım için lütfen bir yer seçin:"
+                        messages_dict = {"İYTE'den Ulaşım": messages_sub}
+                        interactive_data = interactive_list_text(body_text=text, 
+                                                                 categorized_messages=messages_dict,
+                                                                 header_text="İYTE Asistanı",
+                                                                 footer_text="Lütfen bir madde seçin.")
+                        send_list_message(wa_id, interactive_data=interactive_data)
+                        
                 else:
                     send_whatsapp_text(wa_id, text)
                 return JsonResponse({"status": "message processed"})
