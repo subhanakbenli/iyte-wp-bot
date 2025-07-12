@@ -11,6 +11,10 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 """
 
 from pathlib import Path
+import os
+from dotenv import load_dotenv
+
+load_dotenv()
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -20,10 +24,10 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-e+k1i#up6b*-e63818ay)4meje4g!#1nf5d=l-f)hlju3=v)&v'
+SECRET_KEY = os.getenv('SECRET_KEY', 'django-insecure-default-key-change-in-production')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = os.getenv('DEBUG', 'False').lower() == 'true'
 
 
 
@@ -134,7 +138,5 @@ load_dotenv()
 WHATSAPP_TOKEN = os.getenv("WHATSAPP_TOKEN")
 PHONE_NUMBER_ID = os.getenv("PHONE_NUMBER_ID")
 
-ALLOWED_HOSTS = [
-    "*"
-]
+ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS', '*').split(',')
 
